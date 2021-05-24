@@ -19,7 +19,27 @@
         "command": "line-surfer.surf",
         "title": "Line Surfer"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "LineSurfer",
+      "properties": {
+        "lineSurfer.crestColor": {
+          "type": "string",
+          "default": "#444444",
+          "description": "The color hex that colors the current line"
+        },
+        "lineSurfer.troughColor": {
+          "type": "string",
+          "default": "#111111",
+          "description": "The color hex that defines the end color of the gradient"
+        },
+        "lineSurfer.amplitude": {
+          "type": "number",
+          "default": "3",
+          "description": "The number of lines the wave extends above and below the current line."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
