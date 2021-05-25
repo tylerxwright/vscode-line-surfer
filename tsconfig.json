@@ -12,7 +12,9 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noUnusedParameters": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+		"noImplicitAny": false,
+		"noUnusedLocals": false,
     },
     "exclude": [
         "node_modules",
