@@ -41,9 +41,21 @@ class Wave {
     reload() {
         const config = vscode.workspace.getConfiguration('lineSurfer');
 
-        this.above.forEach((line) => {
+        
 
-        });
+        // TODO: This needs to reset the waves to either
+        // a previous state or to none since there is a bug
+        // when you change the amplitude and go back to the
+        // active editor. I think I can just set the styles
+        // of the original lines to none
+
+        // const centerLine = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
+        //     backgroundColor: 'none',
+        //     fontWeight: 'normal',
+        // });
+        // this.above.forEach((line) => {
+
+        // });
 
         this.center = undefined;
         this.above = [];
@@ -103,7 +115,7 @@ class Wave {
     
         const line = editor.document.lineAt(lineNumber + offset);
     
-        let waveDecoration: TextEditorDecorationType = this.center;
+        let waveDecoration = this.center;
         if(offset < 0) {
             waveDecoration = this.above[Math.abs(offset) - 1];
         } else if(offset > 0) {
