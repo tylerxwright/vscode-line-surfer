@@ -67,6 +67,7 @@ export class Wave {
         const centerWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
             backgroundColor: this.getWaveColor(0),
             fontWeight: this.fontWeight,
+            isWholeLine: true
         });
     
         this.center = centerWave;
@@ -74,12 +75,14 @@ export class Wave {
         for(let i=1; i<this.amplitude; i++) {
             const aboveWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
-                fontWeight: this.getLineWeight(i)
+                fontWeight: this.getLineWeight(i),
+                isWholeLine: true
             });
     
             const belowWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
-                fontWeight: this.getLineWeight(i)
+                fontWeight: this.getLineWeight(i),
+                isWholeLine: true
             });
     
             this.above.push(aboveWave);

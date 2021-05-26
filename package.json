@@ -8,7 +8,7 @@
     "url": "https://github.com/tylerxwright/vscode-line-surfer"
   },
   "publisher": "tylerxwright",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "engines": {
     "vscode": "^1.56.0"
@@ -43,6 +43,11 @@
           "type": "string",
           "default": "900",
           "description": "The font weight of the current line"
+        }, 
+        "lineSurfer.useWholeLine": {
+          "type": "boolean",
+          "default": false,
+          "description": "When enabled, the wave will extend across the editor"
         }
       }
     }

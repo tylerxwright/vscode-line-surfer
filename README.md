@@ -26,6 +26,20 @@ Initial release.
 - Current line gradient, aka "The Wave"
 - Settings to configure the size and colors of the wave.
 
+### 1.0.1
+
+Font Weight enhancement and a bug fix.
+  
+- Font Weight is now a configurable setting
+- Font Weights now radiate out from the wave crest
+- The wave goes away when you have selected text now
+
+### 1.0.2
+
+Visual enhancement
+  
+- Adds option to extend the wave across the editor
+
 ----------------------------------------------------------------------------------------
 
 ## **Get Rad!**
