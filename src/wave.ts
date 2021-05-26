@@ -101,10 +101,10 @@ export class Wave {
 
     private getLineWeight(index: number): string {
         if(this.amplitude === 1) {
-            return '900';
+            return this.fontWeight;
         }
 
-        return (100 / (this.amplitude - 1) * index).toString()
+        return (Number(this.fontWeight) - (100 / (this.amplitude - 1) * index * Number(this.fontWeight) / 100)).toString();
     }
 
     private createWave(lineNumber: number, editor: TextEditor) {
