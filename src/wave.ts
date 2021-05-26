@@ -71,10 +71,12 @@ export class Wave {
         for(let i=1; i<this.amplitude; i++) {
             const aboveWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
+                fontWeight: this.getLineWeight(i)
             });
     
             const belowWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
+                fontWeight: this.getLineWeight(i)
             });
     
             this.above.push(aboveWave);
@@ -83,12 +85,37 @@ export class Wave {
     }
 
     private getWaveColor(index: number): string {
-        return this.colormaps === undefined ? '#000000' : this.colormaps(100 / (this.amplitude - 1 ) * index / 100);
+        if(this.colormaps === undefined) {
+            return '#000000';
+        }
+
+        if(this.amplitude === 1) {
+            return this.colormaps(1);
+        }
+
+        return this.colormaps(100 / (this.amplitude - 1 ) * index / 100);
+    }
+
+    private getLineWeight(index: number): string {
+        if(this.amplitude === 1) {
+            return '900';
+        }
+
+        return (100 / (this.amplitude - 1) * index).toString()
     }
 
     private createWave(lineNumber: number, editor: TextEditor) {
+        const rangeLength = editor.document.offsetAt(editor.selection.end) - editor.document.offsetAt(editor.selection.start);
+
+        if(rangeLength > 0) {
+            this.reset();
+        } else {
+            this.reset();
+            this.initializeWaves();
+        }
+
         this.decorateLine(lineNumber, 0, editor);
-    
+
         for(let i=1; i<this.amplitude; i++) {
             this.decorateLine(lineNumber, -i, editor);
             this.decorateLine(lineNumber, i, editor);
