@@ -38,6 +38,11 @@
           "type": "number",
           "default": "3",
           "description": "The number of lines the wave extends above and below the current line."
+        }, 
+        "lineSurfer.fontWeight": {
+          "type": "string",
+          "default": "900",
+          "description": "The font weight of the current line"
         }
       }
     }
