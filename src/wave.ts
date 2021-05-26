@@ -9,6 +9,7 @@ export class Wave {
     private colors: string[] = [];
     private amplitude: number = 3;
     private fontWeight: string = '900';
+    private useWholeLine: boolean = false;
     
     colormaps?: (index: number) => string;
 
@@ -45,8 +46,8 @@ export class Wave {
         ];
 
         this.amplitude = Number(config.get('amplitude'));
-
         this.fontWeight = config.get('fontWeight') as string; 
+        this.useWholeLine = config.get('useWholeLine') as boolean;
 
         this.colormaps = interpolate(this.colors);
 
@@ -67,7 +68,7 @@ export class Wave {
         const centerWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
             backgroundColor: this.getWaveColor(0),
             fontWeight: this.fontWeight,
-            isWholeLine: true
+            isWholeLine: this.useWholeLine
         });
     
         this.center = centerWave;
@@ -76,13 +77,13 @@ export class Wave {
             const aboveWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
                 fontWeight: this.getLineWeight(i),
-                isWholeLine: true
+                isWholeLine: this.useWholeLine
             });
     
             const belowWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
                 backgroundColor: this.getWaveColor(i),
                 fontWeight: this.getLineWeight(i),
-                isWholeLine: true
+                isWholeLine: this.useWholeLine
             });
     
             this.above.push(aboveWave);

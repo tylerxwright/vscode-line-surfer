@@ -40,6 +40,12 @@ Visual enhancement
   
 - Adds option to extend the wave across the editor
 
+### 1.0.3
+
+Bugfix
+  
+- Bug fix to allow enabling and disabling the whole line setting
+
 ----------------------------------------------------------------------------------------
 
 ## **Get Rad!**
