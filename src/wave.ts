@@ -8,6 +8,7 @@ export class Wave {
     private center?: TextEditorDecorationType;
     private colors: string[] = [];
     private amplitude: number = 3;
+    private fontWeight: string = '900';
     
     colormaps?: (index: number) => string;
 
@@ -45,6 +46,8 @@ export class Wave {
 
         this.amplitude = Number(config.get('amplitude'));
 
+        this.fontWeight = config.get('fontWeight') as string; 
+
         this.colormaps = interpolate(this.colors);
 
         this.initializeWaves();
@@ -63,7 +66,7 @@ export class Wave {
     private initializeWaves() {
         const centerWave = vscode.window.createTextEditorDecorationType(<DecorationRenderOptions> {
             backgroundColor: this.getWaveColor(0),
-            fontWeight: '900',
+            fontWeight: this.fontWeight,
         });
     
         this.center = centerWave;

@@ -15,6 +15,7 @@ Turn your cursor into a wave. Line Surfer is a highlighter that applies a gradie
 * `lineSurfer.crestColor`: The color of the current line in the active editor
 * `lineSurfer.troughColor`: The color that is interpolated out to based on the amplitude setting
 * `lineSurfer.amplitude`: The number of lines above and below that the gradient expands to
+* `lineSurfer.fontWeight`: The font weight of the current line
 
 ## Release Notes
 
