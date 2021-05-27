@@ -1,8 +1,8 @@
-# ![Line Surfer Logo](images/logo-small.png) Line Surfer - Surfs up! 
+# ![Line Surfer Logo](resources/logo-small.png) Line Surfer - Surfs up! 
 
 Turn your cursor into a wave. Line Surfer is a highlighter that applies a gradient to the current line in the active editor that expands above and below.
 
-![Line Surfer Demo](images/line-surfer-demo.gif)
+![Line Surfer Demo](resources/line-surfer-demo.gif)
 
 ## Features
 
