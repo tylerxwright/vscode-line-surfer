@@ -19,3 +19,7 @@ All notable changes to the "vscode-line-surfer" extension will be documented in 
 ## [1.0.3] - 2021-05-26
 
 - Bug fix to allow enabling and disabling the whole line setting
+
+## [1.0.4] - 2021-05-27
+- Changed around tooling to start pushing for more of a CI/CD delivery pipeline
+- Starting to implement unit testing

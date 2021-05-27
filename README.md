@@ -46,6 +46,13 @@ Bugfix
   
 - Bug fix to allow enabling and disabling the whole line setting
 
+### 1.0.4
+
+Tooling
+  
+- Changed around tooling to start pushing for more of a CI/CD delivery pipeline
+- Starting to implement unit testing
+
 ----------------------------------------------------------------------------------------
 
 ## **Get Rad!**

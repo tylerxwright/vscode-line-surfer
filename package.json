@@ -8,7 +8,7 @@
     "url": "https://github.com/tylerxwright/vscode-line-surfer"
   },
   "publisher": "tylerxwright",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "engines": {
     "vscode": "^1.56.0"
