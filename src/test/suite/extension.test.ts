@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { after } from 'mocha';
 
 import * as vscode from 'vscode';
-//import * as extension from '../../extension';
+import Wave from '../../wave';
 
 suite('Extension Test Suite', () => {
   after(() => {
@@ -15,7 +15,11 @@ suite('Extension Test Suite', () => {
   });
 
   test('Run Extension', () => {
-    /*vscode.workspace.openTextDocument().then((textDocument: vscode.TextDocument) => {});
-    extension.activate();*/
+    new Wave();
+    if (vscode.window.activeTextEditor) {
+      const lineCount = vscode.window.activeTextEditor.document.lineCount;
+      vscode.window.showInformationMessage(lineCount.toString());
+    }
+    vscode.window.showOpenDialog();
   });
 });
