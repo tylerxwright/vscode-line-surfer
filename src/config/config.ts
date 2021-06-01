@@ -1,6 +1,6 @@
 export interface Config {
   colors: string[];
   amplitude: number;
-  fontWeight: string;
+  fontWeight: number;
   useWholeLine: boolean;
 }

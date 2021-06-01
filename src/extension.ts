@@ -1,11 +1,11 @@
-import Wave from './wave';
+import { WaveManager } from './wave/wave-manager';
 
-let wave: Wave;
+let waveManager: WaveManager;
 
 export function activate(): void {
-  wave = new Wave();
+  waveManager = new WaveManager();
 }
 
 export function deactivate(): void {
-  wave.reset();
+  waveManager.dispose();
 }

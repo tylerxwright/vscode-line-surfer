@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { after } from 'mocha';
 
 import * as vscode from 'vscode';
-import Wave from '../../wave';
+import { WaveManager } from '../../wave/wave-manager';
 
 suite('Extension Test Suite', () => {
   after(() => {
@@ -15,7 +15,7 @@ suite('Extension Test Suite', () => {
   });
 
   test('Run Extension', () => {
-    new Wave();
+    new WaveManager();
     if (vscode.window.activeTextEditor) {
       const lineCount = vscode.window.activeTextEditor.document.lineCount;
       vscode.window.showInformationMessage(lineCount.toString());
