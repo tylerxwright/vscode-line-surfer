@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
 import interpolate from 'color-interpolate';
+import * as vscode from 'vscode';
 import { Config } from '../config/config';
 
 export class Wave {
