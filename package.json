@@ -68,6 +68,12 @@
           "type": "boolean",
           "default": false,
           "description": "When enabled, the wave will extend across the editor"
+        },
+        "lineSurfer.excludedLanguages": {
+          "type": "array",
+          "default": [],
+          "description": "Don't use wave on files of these languages",
+          "scope": "window"
         }
       }
     }
@@ -96,6 +102,8 @@
   "dependencies": {
     "color-interpolate": "^1.0.5",
     "json5": "^2.2.0",
+    "vscode-oniguruma": "^1.5.1",
+    "vscode-textmate": "^5.4.0",
     "vscode-uri": "^1.0.6"
   }
 }

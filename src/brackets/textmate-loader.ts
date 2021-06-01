@@ -5,6 +5,8 @@ import fs = require('fs');
 import { getRegexForBrackets } from './bracket-util';
 import JSON5 = require('json5');
 import LanguageConfig from './language-config';
+import * as TextMate from 'vscode-textmate';
+import * as Oniguruma from 'vscode-oniguruma';
 
 export class TextMateLoader {
   public readonly scopeNameToLanguage = new Map<string, string>();
@@ -19,8 +21,8 @@ export class TextMateLoader {
   private readonly languageConfigs = new Map<string, LanguageConfig>();
   constructor() {
     this.initializeGrammars();
-    this.vsctm = this.loadTextMate();
-    this.oniguruma = this.loadOniguruma();
+    this.vsctm = TextMate;
+    this.oniguruma = Oniguruma;
   }
 
   public tryGetLanguageConfig(languageID: string): LanguageConfig | void | Promise<unknown> {
@@ -117,28 +119,6 @@ export class TextMateLoader {
         return grammar;
       });
     });
-  }
-
-  private getNodeModulePath(moduleName: string) {
-    return path.join(vscode.env.appRoot, 'node_modules.asar', moduleName);
-  }
-
-  private getNodeModule(moduleName: string) {
-    return require(this.getNodeModulePath(moduleName));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private loadTextMate(): any {
-    return this.getNodeModule('vscode-textmate');
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private loadOniguruma(): any {
-    const oniguruma = this.getNodeModule('vscode-oniguruma');
-    const wasmPath = path.join(this.getNodeModulePath('vscode-oniguruma'), 'release', 'onig.wasm');
-    const onigurumaWasm = fs.readFileSync(wasmPath).buffer;
-    oniguruma.loadWASM(onigurumaWasm);
-    return oniguruma;
   }
 
   private initializeGrammars() {

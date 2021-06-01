@@ -7,9 +7,6 @@ export default class DocumentDecorationManager {
   private readonly settings = new Settings();
 
   public Dispose(): void {
-    this.documents.forEach((document) => {
-      document.dispose();
-    });
     this.settings.dispose();
   }
 
@@ -57,7 +54,6 @@ export default class DocumentDecorationManager {
     const document = this.documents.get(uri);
     if (document !== undefined) {
       // console.log("Disposing " + uri);
-      document.dispose();
       this.documents.delete(uri);
     }
   }
@@ -65,13 +61,7 @@ export default class DocumentDecorationManager {
   public onDidChangeSelection(event: TextEditorSelectionChangeEvent): void {
     // console.log("onDidChangeSelection");
     const documentDecoration = this.getDocumentDecorations(event.textEditor.document);
-    if (
-      documentDecoration &&
-      (documentDecoration.settings.highlightActiveScope ||
-        documentDecoration.settings.showBracketsInGutter ||
-        documentDecoration.settings.showVerticalScopeLine ||
-        documentDecoration.settings.showHorizontalScopeLine)
-    ) {
+    if (documentDecoration) {
       documentDecoration.updateScopeDecorations(event);
     }
   }

@@ -39,13 +39,12 @@ export default class MultipleBracketGroups implements IBracketManager {
     return this.previousOpenBracketColorIndexes[type];
   }
 
-  public addOpenBracket(token: Token, colorIndex: number): void {
-    const openBracket = new Bracket(token, this.settings.colors[colorIndex]);
+  public addOpenBracket(token: Token): void {
+    const openBracket = new Bracket(token);
     this.allBracketsOnLine.push(openBracket);
     this.bracketsHash += openBracket.token.character;
 
     this.allLinesOpenBracketStack[token.type].push(openBracket);
-    this.previousOpenBracketColorIndexes[token.type] = colorIndex;
   }
 
   public GetAmountOfOpenBrackets(type: number): number {
@@ -67,7 +66,7 @@ export default class MultipleBracketGroups implements IBracketManager {
       return undefined;
     }
 
-    const orphan = new Bracket(token, this.settings.unmatchedScopeColor);
+    const orphan = new Bracket(token);
     this.allBracketsOnLine.push(orphan);
     this.bracketsHash += orphan.token.character;
     return undefined;

@@ -1,7 +1,6 @@
 import { Position } from 'vscode';
 import Bracket from './bracket';
 import BracketClose from './bracket-close';
-import ColorMode from './color-mode';
 import IBracketManager from './bracket-manager';
 import LanguageConfig from './language-config';
 import MultipleBracketGroups from './multiple-indexes';
@@ -30,16 +29,8 @@ export default class LineState {
       this.bracketManager = previousState.colorIndexes;
       this.previousBracketColor = previousState.previousBracketColor;
     } else {
-      switch (settings.colorMode) {
-        case ColorMode.Consecutive:
-          this.bracketManager = new SingularBracketGroup(settings);
-          break;
-        case ColorMode.Independent:
-          this.bracketManager = new MultipleBracketGroups(settings, languageConfig);
-          break;
-        default:
-          throw new RangeError('Not implemented enum value');
-      }
+      this.bracketManager = new SingularBracketGroup(settings);
+      this.bracketManager = new MultipleBracketGroups(settings, languageConfig);
     }
   }
 
@@ -78,23 +69,7 @@ export default class LineState {
   }
 
   private addOpenBracket(token: Token) {
-    let colorIndex: number;
-
-    if (this.settings.forceIterationColorCycle) {
-      colorIndex = (this.bracketManager.getPreviousIndex(token.type) + 1) % this.settings.colors.length;
-    } else {
-      colorIndex = this.bracketManager.GetAmountOfOpenBrackets(token.type) % this.settings.colors.length;
-    }
-
-    let color = this.settings.colors[colorIndex];
-
-    if (this.settings.forceUniqueOpeningColor && color === this.previousBracketColor) {
-      colorIndex = (colorIndex + 1) % this.settings.colors.length;
-      color = this.settings.colors[colorIndex];
-    }
-
-    this.previousBracketColor = color;
-    this.bracketManager.addOpenBracket(token, colorIndex);
+    this.bracketManager.addOpenBracket(token);
   }
 
   private addCloseBracket(token: Token) {

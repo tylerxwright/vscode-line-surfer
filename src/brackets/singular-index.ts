@@ -36,12 +36,11 @@ export default class SingularBracketGroup implements IBracketManager {
     return this.allBracketsOnLine;
   }
 
-  public addOpenBracket(token: Token, colorIndex: number): void {
-    const openBracket = new Bracket(token, this.settings.colors[colorIndex]);
+  public addOpenBracket(token: Token): void {
+    const openBracket = new Bracket(token);
     this.allLinesOpenBracketStack.push(openBracket);
     this.allBracketsOnLine.push(openBracket);
     this.bracketsHash += openBracket.token.character;
-    this.previousOpenBracketColorIndex = colorIndex;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,7 +60,7 @@ export default class SingularBracketGroup implements IBracketManager {
       }
     }
 
-    const orphan = new Bracket(token, this.settings.unmatchedScopeColor);
+    const orphan = new Bracket(token);
     this.allBracketsOnLine.push(orphan);
     this.bracketsHash += orphan.token.character;
   }

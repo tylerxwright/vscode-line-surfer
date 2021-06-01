@@ -1,25 +1,30 @@
 import * as vscode from 'vscode';
+import DocumentDecorationManager from '../brackets/document-decoration-manager';
 import { ConfigManager } from '../config/config-manager';
 import { Wave } from './wave';
 
 export class WaveManager {
   private configManager: ConfigManager;
+  private documentManager: DocumentDecorationManager;
   private wave: Wave;
 
   constructor() {
     this.configManager = new ConfigManager();
+    this.documentManager = new DocumentDecorationManager();
     this.wave = new Wave(this.configManager.config);
 
+    //this.documentManager.updateAllDocuments();
     this.configureWave();
-    this.registerEvents();
     this.createWave();
   }
 
-  private registerEvents() {
+  public registerChangeTextEditorSelection(): void {
     vscode.window.onDidChangeTextEditorSelection((evt: vscode.TextEditorSelectionChangeEvent) =>
       this.wave.render(evt.textEditor.selection.active.line, evt.textEditor),
     );
+  }
 
+  public registerChangeConfiguration(): void {
     vscode.workspace.onDidChangeConfiguration((evt: vscode.ConfigurationChangeEvent) => {
       if (evt.affectsConfiguration('lineSurfer')) {
         this.createWave();
