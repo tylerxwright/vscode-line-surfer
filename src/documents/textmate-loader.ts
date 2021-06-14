@@ -1,12 +1,12 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { IExtensionPackage, IGrammar } from './extension-grammer';
+import { IExtensionPackage, IGrammar } from './extension-grammar';
 import fs = require('fs');
 import { getRegexForBrackets } from './bracket-util';
-import JSON5 = require('json5');
+//import JSON5 = require('json5');
 import LanguageConfig from './language-config';
-import * as TextMate from 'vscode-textmate';
-import * as Oniguruma from 'vscode-oniguruma';
+// import * as TextMate from 'vscode-textmate';
+// import * as Oniguruma from 'vscode-oniguruma';
 
 export class TextMateLoader {
   public readonly scopeNameToLanguage = new Map<string, string>();
@@ -19,10 +19,33 @@ export class TextMateLoader {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly oniguruma: any;
   private readonly languageConfigs = new Map<string, LanguageConfig>();
+
   constructor() {
     this.initializeGrammars();
-    this.vsctm = TextMate;
-    this.oniguruma = Oniguruma;
+    this.loadTextMate();
+    this.loadOniguruma();
+  }
+
+  private getNodeModulePath(moduleName: string) {
+    return path.join(vscode.env.appRoot, 'node_modules.asar', moduleName);
+  }
+
+  private getNodeModule(moduleName: string) {
+    return require(this.getNodeModulePath(moduleName));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private loadTextMate(): any {
+    return this.getNodeModule('vscode-textmate');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private loadOniguruma(): any {
+    const oniguruma = this.getNodeModule('vscode-oniguruma');
+    const wasmPath = path.join(this.getNodeModulePath('vscode-oniguruma'), 'release', 'onig.wasm');
+    const onigurumaWasm = fs.readFileSync(wasmPath).buffer;
+    oniguruma.loadWASM(onigurumaWasm);
+    return oniguruma;
   }
 
   public tryGetLanguageConfig(languageID: string): LanguageConfig | void | Promise<unknown> {
@@ -47,7 +70,7 @@ export class TextMateLoader {
         if (error) {
           reject(error);
         } else {
-          const config = JSON5.parse(content.toString());
+          const config = JSON.parse(content.toString());
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const brackets = (config as any).brackets as [string[]];
           resolve(brackets);

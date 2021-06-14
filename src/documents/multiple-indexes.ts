@@ -2,8 +2,8 @@ import { Position, Range } from 'vscode';
 import Bracket from './bracket';
 import BracketClose from './bracket-close';
 import IBracketManager from './bracket-manager';
+import { GrammarManager } from './grammar-manager';
 import LanguageConfig from './language-config';
-import Settings from './settings';
 import Token from './token';
 
 export default class MultipleBracketGroups implements IBracketManager {
@@ -11,18 +11,18 @@ export default class MultipleBracketGroups implements IBracketManager {
   private allBracketsOnLine: Bracket[] = [];
   private bracketsHash = '';
   private previousOpenBracketColorIndexes: number[] = [];
-  private readonly settings: Settings;
+  private readonly grammarManager: GrammarManager;
   private readonly languageConfig: LanguageConfig;
 
   constructor(
-    settings: Settings,
+    grammarManager: GrammarManager,
     languageConfig: LanguageConfig,
     previousState?: {
       currentOpenBracketColorIndexes: Bracket[][];
       previousOpenBracketColorIndexes: number[];
     },
   ) {
-    this.settings = settings;
+    this.grammarManager = grammarManager;
     this.languageConfig = languageConfig;
     if (previousState !== undefined) {
       this.allLinesOpenBracketStack = previousState.currentOpenBracketColorIndexes;
@@ -115,7 +115,7 @@ export default class MultipleBracketGroups implements IBracketManager {
       clone.push(value.slice());
     }
 
-    return new MultipleBracketGroups(this.settings, this.languageConfig, {
+    return new MultipleBracketGroups(this.grammarManager, this.languageConfig, {
       currentOpenBracketColorIndexes: clone,
       previousOpenBracketColorIndexes: this.previousOpenBracketColorIndexes.slice(),
     });

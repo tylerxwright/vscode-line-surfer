@@ -1,6 +1,9 @@
 import interpolate from 'color-interpolate';
 import * as vscode from 'vscode';
+import { TextEditor } from 'vscode';
 import { Config } from '../config/config';
+import { Mode } from '../config/mode';
+import { DocumentScope } from '../documents/document-scope';
 
 export class Wave {
   public above: vscode.TextEditorDecorationType[] = [];
@@ -10,14 +13,15 @@ export class Wave {
   private config: Config;
 
   constructor(config: Config) {
+    // I dont think config should persist like this
     this.config = config;
   }
 
-  public configure(config: Config): void {
+  public initialize(config: Config, textEditor: TextEditor, documentScope?: DocumentScope): void {
     this.config = config;
 
     this.reset();
-    this.build();
+    this.build(textEditor, documentScope);
   }
 
   public reset(): void {
@@ -30,21 +34,41 @@ export class Wave {
     this.below = [];
   }
 
-  public build(): void {
+  public build(editor: TextEditor, documentScope?: DocumentScope): void {
     this.colormaps = interpolate(this.config.colors);
-
-    this.center = this.createDecoration(0);
-
-    for (let i = 1; i < this.config.amplitude; i++) {
-      const above = this.createDecoration(i);
-      const below = this.createDecoration(i);
-
-      this.above.push(above);
-      this.below.push(below);
-    }
+    this.center = this.createDecoration(0, 0);
+    this.createWaveEdges(editor, documentScope);
   }
 
-  public render(lineNumber: number, editor: vscode.TextEditor): void {
+  private createWaveEdges(editor: TextEditor, documentScope?: DocumentScope) {
+    const currentLineNumber = editor.selection.active.line;
+    let aboveLineCount = this.config.amplitude;
+    let belowLineCount = this.config.amplitude;
+
+    if (this.config.mode === Mode.Sticky && documentScope !== undefined) {
+      aboveLineCount = currentLineNumber - documentScope.startLineIndex;
+      belowLineCount = documentScope.endLineIndex - currentLineNumber;
+    }
+
+    this.above = this.createWaveEdge(this.above, aboveLineCount);
+    this.below = this.createWaveEdge(this.below, belowLineCount);
+  }
+
+  private createWaveEdge(
+    waveEdge: vscode.TextEditorDecorationType[],
+    amplitude: number,
+  ): vscode.TextEditorDecorationType[] {
+    for (let i = 1; i < amplitude; i++) {
+      const edge = this.createDecoration(i, amplitude);
+      waveEdge.push(edge);
+    }
+
+    return waveEdge;
+  }
+
+  public render(editor: TextEditor, documentScope?: DocumentScope): void {
+    const lineNumber = editor.selection.active.line;
+
     this.reset();
 
     const hasSelection = this.hasSelection(editor);
@@ -53,11 +77,14 @@ export class Wave {
       return;
     }
 
-    this.build();
+    this.build(editor, documentScope);
     this.renderLine(lineNumber, 0, editor);
 
-    for (let i = 1; i < this.config.amplitude; i++) {
+    for (let i = 1; i < this.above.length; i++) {
       this.renderLine(lineNumber, -i, editor);
+    }
+
+    for (let i = 1; i < this.below.length; i++) {
       this.renderLine(lineNumber, i, editor);
     }
   }
@@ -79,10 +106,11 @@ export class Wave {
     editor.setDecorations(waveDecoration, [line]);
   }
 
-  private createDecoration(colorIndex: number): vscode.TextEditorDecorationType {
+  private createDecoration(colorIndex: number, amplitude: number): vscode.TextEditorDecorationType {
     const decoration = vscode.window.createTextEditorDecorationType(<vscode.DecorationRenderOptions>{
-      backgroundColor: this.getWaveColor(colorIndex),
-      fontWeight: colorIndex === 0 ? this.config.fontWeight.toString() : this.getLineWeight(colorIndex).toString(),
+      backgroundColor: this.getWaveColor(colorIndex, amplitude),
+      fontWeight:
+        colorIndex === 0 ? this.config.fontWeight.toString() : this.getLineWeight(colorIndex, amplitude).toString(),
       isWholeLine: this.config.useWholeLine,
     });
 
@@ -97,27 +125,24 @@ export class Wave {
     return length > 0;
   }
 
-  private getWaveColor(index: number): string {
+  private getWaveColor(index: number, amplitude: number): string {
     if (this.colormaps === undefined) {
       return 'none';
     }
 
-    if (this.config.amplitude === 1) {
+    if (amplitude === 1) {
       return this.colormaps(1);
     }
 
-    return this.colormaps(((100 / (this.config.amplitude - 1)) * index) / 100);
+    return this.colormaps(((100 / (amplitude - 1)) * index) / 100);
   }
 
-  private getLineWeight(index: number): number {
-    if (this.config.amplitude === 1) {
+  private getLineWeight(index: number, amplitude: number): number {
+    if (amplitude === 1) {
       return this.config.fontWeight;
     }
 
-    return (
-      Number(this.config.fontWeight) -
-      ((100 / (this.config.amplitude - 1)) * index * Number(this.config.fontWeight)) / 100
-    );
+    return Number(this.config.fontWeight) - ((100 / (amplitude - 1)) * index * Number(this.config.fontWeight)) / 100;
   }
 
   public dispose(): void {

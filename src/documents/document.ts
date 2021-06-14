@@ -1,16 +1,15 @@
 import * as vscode from 'vscode';
-//import Bracket from './bracket';
 import BracketClose from './bracket-close';
-import { IStackElement } from './extension-grammer';
+import { DocumentScope } from './document-scope';
+import { IStackElement } from './extension-grammar';
+import { GrammarManager } from './grammar-manager';
 import LanguageConfig from './language-config';
 import LineState from './line-state';
-import Settings from './settings';
 import TextLine from './text-line';
 import { ignoreBracketsInToken, LineTokens } from './vscode-files';
-import { TextDocumentContentChangeEvent } from 'vscode';
 
-export default class DocumentDecoration {
-  public readonly settings: Settings;
+export class Document {
+  public readonly grammarMaanger: GrammarManager;
 
   // This program caches lines, and will only analyze linenumbers including or above a modified line
   private lines: TextLine[] = [];
@@ -18,13 +17,13 @@ export default class DocumentDecoration {
   private readonly languageConfig: LanguageConfig;
   private scopeSelectionHistory: vscode.Selection[][] = [];
 
-  constructor(document: vscode.TextDocument, config: LanguageConfig, settings: Settings) {
-    this.settings = settings;
+  constructor(document: vscode.TextDocument, config: LanguageConfig, grammarMaanger: GrammarManager) {
+    this.grammarMaanger = grammarMaanger;
     this.document = document;
     this.languageConfig = config;
   }
 
-  public onDidChangeTextDocument(contentChanges: ReadonlyArray<TextDocumentContentChangeEvent>): void {
+  public onDidChangeTextDocument(contentChanges: ReadonlyArray<vscode.TextDocumentContentChangeEvent>): void {
     if (contentChanges.length > 1 || !contentChanges[0].range.isSingleLine || contentChanges[0].text.length > 1) {
       let minLineIndexToUpdate = 0;
       for (const contentChange of contentChanges) {
@@ -110,7 +109,7 @@ export default class DocumentDecoration {
       return this.lines[index];
     } else {
       if (this.lines.length === 0) {
-        this.lines.push(new TextLine(state, new LineState(this.settings, this.languageConfig), 0));
+        this.lines.push(new TextLine(state, new LineState(this.grammarMaanger, this.languageConfig), 0));
       }
 
       if (index < this.lines.length) {
@@ -156,33 +155,15 @@ export default class DocumentDecoration {
     return;
   }
 
-  public updateScopeDecorations(event: vscode.TextEditorSelectionChangeEvent): void {
-    // console.time("updateScopeDecorations");
-
-    // For performance reasons we only do one selection for now.
-    // Simply wrap in foreach selection for multicursor, maybe put it behind an option?
-    const selection = event.textEditor.selection;
-
+  public getCurrentScope(selection: vscode.Selection): DocumentScope | undefined {
     const closeBracket = this.searchScopeForwards(selection.active);
     if (!closeBracket) {
-      return;
+      return undefined;
     }
 
-    // const openBracket = closeBracket.openBracket;
-    // const beginRange = openBracket.token.range;
-    // const endRange = closeBracket.token.range;
-    // const startLineIndex = openBracket.token.range.start.line;
-    // const endLineIndex = closeBracket.token.range.start.line;
-
-    // const lastWhiteSpaceCharacterIndex = this.document.lineAt(endRange.start).firstNonWhitespaceCharacterIndex;
-    // const lastBracketStartIndex = endRange.start.character;
-    // const lastBracketIsFirstCharacterOnLine = lastWhiteSpaceCharacterIndex === lastBracketStartIndex;
-
-    // const start = beginRange.start.line + 1;
-    // const end = endRange.start.line;
-
+    const currentScope = new DocumentScope(this.document, closeBracket);
     // console.timeEnd("updateScopeDecorations");
-    return;
+    return currentScope;
   }
 
   private tokenizeLine(index: number) {
@@ -190,7 +171,7 @@ export default class DocumentDecoration {
     const previousLineRuleStack = index > 0 ? this.lines[index - 1].getRuleStack() : undefined;
 
     const previousLineState =
-      index > 0 ? this.lines[index - 1].cloneState() : new LineState(this.settings, this.languageConfig);
+      index > 0 ? this.lines[index - 1].cloneState() : new LineState(this.grammarMaanger, this.languageConfig);
 
     const tokenized = this.languageConfig.grammar.tokenizeLine2(newText, previousLineRuleStack);
     const tokens = tokenized.tokens;

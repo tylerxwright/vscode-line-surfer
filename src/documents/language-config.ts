@@ -1,4 +1,4 @@
-import { IGrammar } from './extension-grammer';
+import { IGrammar } from './extension-grammar';
 
 export default class LanguageConfig {
   public readonly grammar: IGrammar;

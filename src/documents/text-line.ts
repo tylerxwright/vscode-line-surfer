@@ -1,7 +1,7 @@
 import { Position } from 'vscode';
 import Bracket from './bracket';
 import BracketClose from './bracket-close';
-import { IStackElement } from './extension-grammer';
+import { IStackElement } from './extension-grammar';
 import LineState from './line-state';
 
 export default class TextLine {

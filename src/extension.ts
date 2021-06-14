@@ -1,17 +1,11 @@
-import { WaveManager } from './wave/wave-manager';
+import { LineSurfer } from './line-surfer';
 
-let waveManager: WaveManager;
+let lineSurfer: LineSurfer;
 
 export function activate(): void {
-  waveManager = new WaveManager();
-  registerEvents();
-}
-
-function registerEvents(): void {
-  waveManager.registerChangeConfiguration();
-  waveManager.registerChangeTextEditorSelection();
+  lineSurfer = new LineSurfer();
 }
 
 export function deactivate(): void {
-  waveManager.dispose();
+  lineSurfer.dispose();
 }

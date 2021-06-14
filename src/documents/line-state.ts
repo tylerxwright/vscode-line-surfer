@@ -2,35 +2,35 @@ import { Position } from 'vscode';
 import Bracket from './bracket';
 import BracketClose from './bracket-close';
 import IBracketManager from './bracket-manager';
+import { GrammarManager } from './grammar-manager';
 import LanguageConfig from './language-config';
 import MultipleBracketGroups from './multiple-indexes';
-import Settings from './settings';
 import SingularBracketGroup from './singular-index';
 import Token from './token';
 
 export default class LineState {
   private readonly bracketManager: IBracketManager;
   private previousBracketColor = '';
-  private readonly settings: Settings;
+  private readonly grammarManager: GrammarManager;
   private readonly languageConfig: LanguageConfig;
 
   constructor(
-    settings: Settings,
+    grammarManager: GrammarManager,
     languageConfig: LanguageConfig,
     previousState?: {
       readonly colorIndexes: IBracketManager;
       readonly previousBracketColor: string;
     },
   ) {
-    this.settings = settings;
+    this.grammarManager = grammarManager;
     this.languageConfig = languageConfig;
 
     if (previousState !== undefined) {
       this.bracketManager = previousState.colorIndexes;
       this.previousBracketColor = previousState.previousBracketColor;
     } else {
-      this.bracketManager = new SingularBracketGroup(settings);
-      this.bracketManager = new MultipleBracketGroups(settings, languageConfig);
+      this.bracketManager = new SingularBracketGroup(grammarManager);
+      this.bracketManager = new MultipleBracketGroups(grammarManager, languageConfig);
     }
   }
 
@@ -44,7 +44,7 @@ export default class LineState {
       previousBracketColor: this.previousBracketColor,
     };
 
-    return new LineState(this.settings, this.languageConfig, clone);
+    return new LineState(this.grammarManager, this.languageConfig, clone);
   }
 
   public getClosingBracket(position: Position): BracketClose | undefined {

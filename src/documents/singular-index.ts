@@ -2,7 +2,7 @@ import { Position, Range } from 'vscode';
 import Bracket from './bracket';
 import BracketClose from './bracket-close';
 import IBracketManager from './bracket-manager';
-import Settings from './settings';
+import { GrammarManager } from './grammar-manager';
 import Token from './token';
 
 export default class SingularBracketGroup implements IBracketManager {
@@ -10,16 +10,16 @@ export default class SingularBracketGroup implements IBracketManager {
   private allBracketsOnLine: Bracket[] = [];
   private bracketsHash = '';
   private previousOpenBracketColorIndex = -1;
-  private readonly settings: Settings;
+  private readonly grammarManager: GrammarManager;
 
   constructor(
-    settings: Settings,
+    grammarManager: GrammarManager,
     previousState?: {
       currentOpenBracketColorIndexes: Bracket[];
       previousOpenBracketColorIndex: number;
     },
   ) {
-    this.settings = settings;
+    this.grammarManager = grammarManager;
 
     if (previousState !== undefined) {
       this.allLinesOpenBracketStack = previousState.currentOpenBracketColorIndexes;
@@ -99,7 +99,7 @@ export default class SingularBracketGroup implements IBracketManager {
   }
 
   public copyCumulativeState(): SingularBracketGroup {
-    return new SingularBracketGroup(this.settings, {
+    return new SingularBracketGroup(this.grammarManager, {
       currentOpenBracketColorIndexes: this.allLinesOpenBracketStack.slice(),
       previousOpenBracketColorIndex: this.previousOpenBracketColorIndex,
     });

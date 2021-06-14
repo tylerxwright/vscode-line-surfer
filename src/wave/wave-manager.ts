@@ -1,48 +1,39 @@
-import * as vscode from 'vscode';
-import DocumentDecorationManager from '../brackets/document-decoration-manager';
+import { TextEditor, window } from 'vscode';
 import { ConfigManager } from '../config/config-manager';
+import { DocumentScope } from '../documents/document-scope';
 import { Wave } from './wave';
 
 export class WaveManager {
   private configManager: ConfigManager;
-  private documentManager: DocumentDecorationManager;
   private wave: Wave;
 
-  constructor() {
-    this.configManager = new ConfigManager();
-    this.documentManager = new DocumentDecorationManager();
+  constructor(configManager: ConfigManager, documentScope?: DocumentScope) {
+    this.configManager = configManager;
     this.wave = new Wave(this.configManager.config);
 
-    //this.documentManager.updateAllDocuments();
-    this.configureWave();
+    this.initializeWave(documentScope);
+    this.createWave(documentScope);
+  }
+
+  public render(textEditor: TextEditor, documentScope?: DocumentScope): void {
+    this.wave.render(textEditor, documentScope);
+  }
+
+  public reset(): void {
     this.createWave();
   }
 
-  public registerChangeTextEditorSelection(): void {
-    vscode.window.onDidChangeTextEditorSelection((evt: vscode.TextEditorSelectionChangeEvent) =>
-      this.wave.render(evt.textEditor.selection.active.line, evt.textEditor),
-    );
-  }
-
-  public registerChangeConfiguration(): void {
-    vscode.workspace.onDidChangeConfiguration((evt: vscode.ConfigurationChangeEvent) => {
-      if (evt.affectsConfiguration('lineSurfer')) {
-        this.createWave();
-      }
-    });
-  }
-
-  private createWave() {
-    this.configureWave();
-
-    // This will not fire if you are in the settings dialog
-    if (vscode.window.activeTextEditor !== undefined) {
-      this.wave.render(vscode.window.activeTextEditor.selection.active.line, vscode.window.activeTextEditor);
+  private createWave(documentScope?: DocumentScope) {
+    if (window.activeTextEditor !== undefined) {
+      this.wave.initialize(this.configManager.config, window.activeTextEditor, documentScope);
+      this.wave.render(window.activeTextEditor, documentScope);
     }
   }
 
-  private configureWave() {
-    this.wave.configure(this.configManager.config);
+  private initializeWave(documentScope?: DocumentScope) {
+    if (window.activeTextEditor !== undefined) {
+      this.wave.initialize(this.configManager.config, window.activeTextEditor, documentScope);
+    }
   }
 
   public dispose(): void {
