@@ -16,6 +16,10 @@
   "categories": [
     "Other"
   ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -23,7 +27,8 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "deploy": "vsce publish",
-    "compile": "webpack",
+    "compile": "tsc -watch -p ./",
+    "compile2": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
     "lint": "eslint src --ext ts",
@@ -64,6 +69,21 @@
           "type": "boolean",
           "default": false,
           "description": "When enabled, the wave will extend across the editor"
+        },
+        "lineSurfer.excludedLanguages": {
+          "type": "array",
+          "default": [],
+          "description": "Don't use wave on files of these languages",
+          "scope": "window"
+        },
+        "lineSurfer.mode": {
+          "type": "string",
+          "default": "normal",
+          "enum": ["normal", "sticky"],
+          "enumDescriptions": [
+            "The wave is always based on the other settings and it moves with the cursor. The amplitude is always the same",
+            "The amplitude of the wave sticks to the current document scope, such as a bracket. As you move your cursor within a scope, the crest location changes and remains the defined color, but the troughs of the wave stick to the current scope lines and those remain the defined color, the gradient is modified as the crest moves"
+          ]
         }
       }
     }
@@ -84,12 +104,15 @@
     "source-map-support": "^0.5.19",
     "ts-loader": "^8.0.14",
     "typescript": "^4.1.3",
-    "vsce": "^1.88.0",
     "vscode-test": "^1.5.2",
     "webpack": "^5.19.0",
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
-    "color-interpolate": "^1.0.5"
+    "color-interpolate": "^1.0.5",
+    "json5": "^2.1.0",
+    "vscode-oniguruma": "^1.5.1",
+    "vscode-textmate": "^5.4.0",
+    "vscode-uri": "^1.0.6"
   }
 }

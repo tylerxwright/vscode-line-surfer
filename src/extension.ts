@@ -1,11 +1,11 @@
-import Wave from './wave';
+import { LineSurfer } from './line-surfer';
 
-let wave: Wave;
+let lineSurfer: LineSurfer;
 
 export function activate(): void {
-  wave = new Wave();
+  lineSurfer = new LineSurfer();
 }
 
 export function deactivate(): void {
-  wave.reset();
+  lineSurfer.dispose();
 }
