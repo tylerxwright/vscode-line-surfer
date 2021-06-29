@@ -79,7 +79,7 @@
         "lineSurfer.mode": {
           "type": "string",
           "default": "normal",
-          "enum": ["normal", "Sticky"],
+          "enum": ["normal", "sticky"],
           "enumDescriptions": [
             "The wave is always based on the other settings and it moves with the cursor. The amplitude is always the same",
             "The amplitude of the wave sticks to the current document scope, such as a bracket. As you move your cursor within a scope, the crest location changes and remains the defined color, but the troughs of the wave stick to the current scope lines and those remain the defined color, the gradient is modified as the crest moves"

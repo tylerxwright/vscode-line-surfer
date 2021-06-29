@@ -15,7 +15,7 @@ suite('Extension Test Suite', () => {
   });
 
   // test('Run Extension', () => {
-  //   new WaveManager();
+  // new WaveManager();
   //   if (vscode.window.activeTextEditor) {
   //     const lineCount = vscode.window.activeTextEditor.document.lineCount;
   //     vscode.window.showInformationMessage(lineCount.toString());

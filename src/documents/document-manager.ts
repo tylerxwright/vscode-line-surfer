@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { TextDocumentChangeEvent } from 'vscode';
 import { Document } from './document';
 import { DocumentScope } from './document-scope';
 import { GrammarManager } from './grammar-manager';
@@ -10,6 +11,13 @@ export class DocumentManager {
   public getDocumentScope(textEditor: vscode.TextEditor): DocumentScope | undefined {
     const document = this.getDocumentDetails(textEditor.document);
     return document?.getCurrentScope(textEditor.selection);
+  }
+
+  public onChangeTextDocument(event: TextDocumentChangeEvent): void {
+    const document = this.getDocumentDetails(event.document);
+    if (document) {
+      document.onDidChangeTextDocument(event.contentChanges);
+    }
   }
 
   public updateAllDocuments(): void {

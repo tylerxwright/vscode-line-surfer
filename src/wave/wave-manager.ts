@@ -9,7 +9,7 @@ export class WaveManager {
 
   constructor(configManager: ConfigManager, documentScope?: DocumentScope) {
     this.configManager = configManager;
-    this.wave = new Wave(this.configManager.config);
+    this.wave = new Wave(this.configManager);
 
     this.initializeWave(documentScope);
     this.createWave(documentScope);
@@ -25,14 +25,14 @@ export class WaveManager {
 
   private createWave(documentScope?: DocumentScope) {
     if (window.activeTextEditor !== undefined) {
-      this.wave.initialize(this.configManager.config, window.activeTextEditor, documentScope);
+      this.wave.initialize(window.activeTextEditor, documentScope);
       this.wave.render(window.activeTextEditor, documentScope);
     }
   }
 
   private initializeWave(documentScope?: DocumentScope) {
     if (window.activeTextEditor !== undefined) {
-      this.wave.initialize(this.configManager.config, window.activeTextEditor, documentScope);
+      this.wave.initialize(window.activeTextEditor, documentScope);
     }
   }
 
